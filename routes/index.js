@@ -6,12 +6,14 @@ var pool = new pg.Pool();
 
 pool.connect(function (err, client, done) {
 
-    client.query('SELECT $1::varchar AS my_first_query', ['postgres'])
-        done();
+    if (err)
+        console.log(err);
 
-
-        console.log(result.rows[0]);
-        done()
+    client.query('SELECT * FROM users', function(error, result) {
+        for (var i = 0; i < result.rows.length; i++) {
+            console.log(result.rows[i]);
+        }
+    });
 
 });
 pool.end();
