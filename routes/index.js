@@ -8,6 +8,7 @@ var pool = new pg.Pool();
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
 });
+//page with all the users races
 router.get('/userHome', function(req, res, next) {
     pool.connect(function (err, client, done) {
         if (err) {
@@ -15,14 +16,18 @@ router.get('/userHome', function(req, res, next) {
             res.status(400).send(err);
         }
         client.query('SELECT * FROM users', function (error, result) {
-            for (var i = 0; i < result.rows.length; i++) {
-                console.log(result.rows[i]);
-            }
+            //for (var i = 0; i < result.rows.length; i++) {
+                user = (result.rows[1]);
+                username = (user.username)
+
+            //}
             if (err) {
                 console.log(err);
                 res.status(400).send(err);
             }
-            res.status(200).send(result.rows);
+            res.render('userHome', {
+                user: username
+            });
         });
     });
 });
