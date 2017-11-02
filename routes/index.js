@@ -15,18 +15,13 @@ router.get('/userHome', function(req, res, next) {
             console.log("not able to get connection " + err);
             res.status(400).send(err);
         }
-        client.query('SELECT * FROM users', function (error, result) {
-            //for (var i = 0; i < result.rows.length; i++) {
-                user = (result.rows[1]);
-                username = (user.username)
-
-            //}
+        client.query('SELECT * FROM races', function (error, result) {
             if (err) {
                 console.log(err);
                 res.status(400).send(err);
             }
             res.render('userHome', {
-                user: username
+                races: result.rows
             });
         });
     });

@@ -1,6 +1,7 @@
 <!--List of races user is interested / signed up for-->
 
-{{{user}}}'s Races
+{{#each races as |race| }}
 <ul>
-    <li></li>
+    <li>{{race.raceName}}</li>
 </ul>
+{{/each}}
