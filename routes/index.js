@@ -26,6 +26,7 @@ router.get('/userHome', function(req, res, next) {
         });
     });
 });
+//saving a race to users database
 router.post('/save', function(req, res, next){
     pool.connect(function(err,client,done){
         if (err){
@@ -33,8 +34,10 @@ router.post('/save', function(req, res, next){
             res.status(400).send(err);
         }
         var race = req.body.raceid;
-        client.query( "INSERT INTO raceintent VALUES(1, " + race + ", 'G')",function(err,result){
-
+        var user = req.session.user;
+        var intent = req.body.intent;
+        client.query( "INSERT INTO raceintent VALUES ($1, $2, $3)"
+            , [user, race, intent], function(err,result){
             if(err){
                 console.log(err)
             }
@@ -43,5 +46,9 @@ router.post('/save', function(req, res, next){
         });
     })
 });
-
+//help with sessions https://stormpath.com/blog/everything-you-ever-wanted-to-know-about-node-dot-js-sessions
+router.post('/login', function(req, res){
+    req.session.user = 1;
+    res.redirect('/userHome')
+});
 module.exports = router;

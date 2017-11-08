@@ -6,6 +6,10 @@
             <form method="POST" action="/save">
                 {{race.raceName}}
                 <input type="hidden" value="{{race.RaceID}}" name="raceid">
+                <select name="intent">
+                    <option value="I">Interested</option>
+                    <option value="G">Going</option>
+                </select>
                 <button type="submit">Add Race</button>
             </form>
         </td>
