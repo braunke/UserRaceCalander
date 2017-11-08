@@ -1,7 +1,14 @@
 <!--List of races user is interested / signed up for-->
-
+<table>
 {{#each races as |race| }}
-<ul>
-    <li>{{race.raceName}}</li>
-</ul>
+    <tr>
+        <td>
+            <form method="POST" action="/save">
+                {{race.raceName}}
+                <input type="hidden" value="{{race.RaceID}}" name="raceid">
+                <button type="submit">Add Race</button>
+            </form>
+        </td>
+    </tr>
 {{/each}}
+</table>

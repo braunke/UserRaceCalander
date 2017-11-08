@@ -26,6 +26,22 @@ router.get('/userHome', function(req, res, next) {
         });
     });
 });
+router.post('/save', function(req, res, next){
+    pool.connect(function(err,client,done){
+        if (err){
+            console.log("not able to get connection " + err);
+            res.status(400).send(err);
+        }
+        var race = req.body.raceid;
+        client.query( "INSERT INTO raceintent VALUES(1, " + race + ", 'G')",function(err,result){
 
+            if(err){
+                console.log(err)
+            }
+            res.render('index')
+
+        });
+    })
+});
 
 module.exports = router;
