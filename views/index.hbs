@@ -1,7 +1,12 @@
 <h1>{{title}}</h1>
 <p>Login</p>
 
-
+{{error}}
 <form method="POST" action="/login">
+    <input type="text" name="username" required>Enter User Name</input>
+    <input type="password" name="password" required>
     <button type="submit">Login</button>
+</form>
+<form method="POST" action="/registration">
+    <button type="submit">Register</button>
 </form>
