@@ -3,10 +3,13 @@ var router = express.Router();
 const pg = require('pg');
 const conString = 'postgres://kayla:Hank@localhost/postgres';
 var pool = new pg.Pool();
-
+//used this to validate passwords
+//https://www.npmjs.com/package/validate-password
+var ValidatePassword = require('validate-password');
+var validator = new ValidatePassword();
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index', { title: 'Express' });
+    res.render('index');
 });
 //page with all the users races
 router.get('/userHome', function(req, res, next) {
@@ -56,28 +59,39 @@ router.post('/addUser', function(req, res, next){
             console.log("not able to get connection " + err);
             res.status(400).send(err);
         }
-        client.query("SELECT userid FROM users ORDER BY userid DESC LIMIT 1",
-        function(er, result){
-            if(err){
-                console.log(err)
-            }
-            {
+        var password = req.body.password;
+        var passwordData = validator.checkPassword(password)
+        var valid = passwordData.isValid
+        if (valid === 'true') {
 
-                var lastUserId = result.rows[0].userid
-                console.log(lastUserId)
-                var userid = lastUserId + 1
-                var username = req.body.username;
-                var password = req.body.password;
-                client.query("INSERT INTO users VALUES($1, $2, $3)"
-                    , [userid, username, password], function (err, result) {
-                        if (err) {
-                            console.log(err)
-                        }
-                        res.render('userHome')
-                    })
-            }
-            })
 
+            client.query("SELECT userid FROM users ORDER BY userid DESC LIMIT 1",
+                function (er, result) {
+                    if (err) {
+                        console.log(err)
+                    }
+                    {
+
+
+                        console.log(passwordData.validationMessage)
+                        var lastUserId = result.rows[0].userid
+                        var userid = lastUserId + 1
+                        var username = req.body.username;
+
+                        client.query("INSERT INTO users VALUES($1, $2, $3)"
+                            , [userid, username, password], function (err, result) {
+                                if (err) {
+                                    console.log(err)
+                                }
+                                res.render('userHome')
+                            })
+                    }
+                })
+        }
+        else {
+            var message = passwordData.validationMessage;
+            res.render('createUser', {errorMessage : message})
+        }
             })
 
 });
@@ -90,18 +104,25 @@ router.post('/login', function(req, res){
         }
         var username = req.body.username;
         var password = req.body.password;
-        client.query("SELECT userid FROM users WHERE username=($1) AND password=($2)",[username, password], function (err,result) {
+        console.log(username, password);
+        client.query("SELECT userid FROM users WHERE username=($1)",[username], function (err,result) {
             if (err) {
-
-                res.render('index', {error: 'Invalid username'});
-            } else {
-                console.log(result.rows[0].userid)
-                req.session.user = result.rows[0].userid
-                res.redirect('/userHome')
+                console.log('not in');
+                res.render('index', {error: 'Invalid username or password'});
             }
+            client.query("SELECT userid FROM users WHERE password=($2)",[password], function (err,result) {
+                if (err) {
+                    console.log('not in');
+                    res.render('index', {error: 'Invalid username or password'});
+                }
+
+                else {
+                    console.log(result.rows[0].userid);
+                    req.session.user = result.rows[0].userid;
+                    res.redirect('/userHome')
+                }
+            })
         })
     });
-
-
 });
 module.exports = router;

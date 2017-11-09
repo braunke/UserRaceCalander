@@ -1,29 +1,11 @@
 <h1>Create User</h1>
 <form method="POST" action="/addUser">
+    {{errorMessage}}
+    <br>
     <input type="text" name="username" required>Enter Desired User Name</input>
-    <p>(passwords must be between 8 and 20 characters in length)</p>
-    <input type="password" name="password" onkeyup="return passwordChanged();" required>
+    <p>(passwords must contain and upper and lowercase letter, number and special character)</p>
+    <input type="password" name="password"  required> Password</input>
     <input type="submit" name="submit" value="Signup">
 </form>
 
 
-<script>
-function passwordChanged() {
-var strength = document.getElementById('strength');
-var strongRegex = new RegExp("^(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*\\W).*$", "g");
-var mediumRegex = new RegExp("^(?=.{7,})(((?=.*[A-Z])(?=.*[a-z]))|((?=.*[A-Z])(?=.*[0-9]))|((?=.*[a-z])(?=.*[0-9]))).*$", "g");
-var enoughRegex = new RegExp("(?=.{8,}).*", "g");
-var pwd = document.getElementById("password");
-if (pwd.value.length==0) {
-strength.innerHTML = 'Type Password';
-} else if (false == enoughRegex.test(pwd.value)) {
-strength.innerHTML = 'More Characters';
-} else if (strongRegex.test(pwd.value)) {
-strength.innerHTML = '<span style="color:green">Strong!</span>';
-} else if (mediumRegex.test(pwd.value)) {
-strength.innerHTML = '<span style="color:orange">Medium!</span>';
-} else {
-strength.innerHTML = '<span style="color:red">Weak!</span>';
-}
-}
-</script>
