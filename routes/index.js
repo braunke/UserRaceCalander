@@ -53,6 +53,9 @@ router.post('/save', function(req, res, next){
 router.post('/registration', function(req, res, next){
     res.render('createUser')
 });
+router.get('/calendar', function(req, res, next){
+    res.render('calendar')
+});
 router.post('/addUser', function(req, res, next){
     pool.connect(function(err,client,done){
         if(err){
