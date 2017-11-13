@@ -17,20 +17,34 @@ function requireLogin (req, res, next) {
         next();
     }
 }
-function getRaces(userid, onError, onSuccess){
+//function to set up connection to database
+function getConnection(onError, onSuccess){
     pool.connect(function (err, client, done){
+        if (err) {
+            console.log("not able to get connection " + err);
+            onError(err);
+        } else {
+            onSuccess(client, done);
+        }
+    });
+}
+//function to grab user races
+function getRaces(userid, onError, onSuccess){
+    function fetchRaces(client, done) {
         client.query('SELECT r.* FROM races r ' +
             'INNER JOIN raceintent ri ON ri.raceid = r.raceid ' +
             'INNER JOIN users u ON u.userid = ri.userid ' +
-            'WHERE u.userid=($1)', [userid], function(error,result) {
-            if (err){
+            'WHERE u.userid=($1)', [userid], function(err,result) {
+            if (err) {
                 console.log(err);
                 onError(err);
             } else {
                 onSuccess(result.rows);
             }
         });
-    })
+    }
+
+    getConnection(onError, fetchRaces);
 }
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -87,35 +101,20 @@ router.post('/addUser', function(req, res, next){
         var password = req.body.password;
         var passwordData = validator.checkPassword(password)
         if (passwordData.isValid) {
-
-
-            client.query("SELECT userid FROM users ORDER BY userid DESC LIMIT 1",
-                function (er, result) {
+            var username = req.body.username;
+            client.query("INSERT INTO users (username, userpassword) VALUES ($1, $2)"
+                , [username, password], function (err, result) {
                     if (err) {
                         console.log(err)
                     }
-                    {
-                        console.log(passwordData.validationMessage)
-                        var lastUserId = result.rows[0].userid
-                        var userid = lastUserId + 1
-                        var username = req.body.username;
-
-                        client.query("INSERT INTO users VALUES($1, $2, $3)"
-                            , [userid, username, password], function (err, result) {
-                                if (err) {
-                                    console.log(err)
-                                }
-                                res.render('userHome')
-                            })
-                    }
-                })
+                    res.render('userHome')
+                });
         }
         else {
             var message = passwordData.validationMessage;
             res.render('createUser', {errorMessage : message})
         }
-            })
-
+    });
 });
 //help with sessions https://stormpath.com/blog/everything-you-ever-wanted-to-know-about-node-dot-js-sessions
 router.post('/login', function(req, res){
