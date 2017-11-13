@@ -1,18 +1,7 @@
 <!--List of races user is interested / signed up for-->
-<table>
-{{#each races as |race| }}
-    <tr>
-        <td>
-            <form method="POST" action="/save">
-                {{race.raceName}}
-                <input type="hidden" value="{{race.RaceID}}" name="raceid">
-                <select name="intent">
-                    <option value="I">Interested</option>
-                    <option value="G">Going</option>
-                </select>
-                <button type="submit">Add Race</button>
-            </form>
-        </td>
-    </tr>
-{{/each}}
-</table>
+<h1>User Home</h1>
+<ul>
+    {{#each userraces as |race| }}
+        <li>{{race.racename}}</li>
+    {{/each}}
+</ul>

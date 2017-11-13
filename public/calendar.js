@@ -1,4 +1,5 @@
-
+//documentation on full calendar
+//https://fullcalendar.io/docs/event_data/Event_Object/
 
 $(document).ready(function() {
 
