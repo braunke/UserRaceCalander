@@ -46,6 +46,36 @@ function getRaces(userid, onError, onSuccess){
 
     getConnection(onError, fetchRaces);
 }
+function saveRaces(race, user ,intent, onError, onSuccess){
+    function save(client, done){
+        client.query( "INSERT INTO raceintent VALUES ($1, $2, $3)"
+            , [user, race, intent], function(err,result){
+                if(err){
+                    console.log(err);
+                    onError(err)
+                }else{
+                    onSuccess()
+                }
+            });
+    }
+    getConnection(onError, save);
+}
+function addUser(username, password, onError, onSuccess){
+    function createUser(client, done){
+        client.query("INSERT INTO users (username, userpassword) VALUES ($1, $2)"
+            , [username, password], function (err, result) {
+                if (err) {
+                    console.log(err);
+                    onError(err)
+                }else {
+                    onSuccess();
+
+                }
+            });
+    }
+    getConnection(onError, createUser);
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
     res.render('index');
@@ -56,7 +86,7 @@ router.get('/userHome', requireLogin, function(req, res, next)
         userid  = req.session.user;
 
         function getRacesError(error) {
-            res.status(400).send(err);
+            res.status(400).send(error);
         }
 
         function getRacesSuccess(races) {
@@ -68,23 +98,18 @@ router.get('/userHome', requireLogin, function(req, res, next)
 
 //saving a race to users database
 router.post('/save', function(req, res, next){
-    pool.connect(function(err,client,done){
-        if (err){
-            console.log("not able to get connection " + err);
-            res.status(400).send(err);
-        }
+
         var race = req.body.raceid;
         var user = req.session.user;
         var intent = req.body.intent;
-        client.query( "INSERT INTO raceintent VALUES ($1, $2, $3)"
-            , [user, race, intent], function(err,result){
-            if(err){
-                console.log(err)
-            }
-            res.render('index')
 
-        });
-    })
+        function saveRaceError(error) {
+            res.status(400).send(err);
+        }
+        function saveRaceSuccess(){
+            res.render('index')
+        }
+        saveRaces(race, user, intent, saveRaceError, saveRaceSuccess)
 });
 router.post('/registration', function(req, res, next){
     res.render('createUser')
@@ -93,28 +118,23 @@ router.get('/calendar', function(req, res, next){
     res.render('calendar')
 });
 router.post('/addUser', function(req, res, next){
-    pool.connect(function(err,client,done){
-        if(err){
-            console.log("not able to get connection " + err);
-            res.status(400).send(err);
-        }
+
         var password = req.body.password;
-        var passwordData = validator.checkPassword(password)
+        var passwordData = validator.checkPassword(password);
         if (passwordData.isValid) {
             var username = req.body.username;
-            client.query("INSERT INTO users (username, userpassword) VALUES ($1, $2)"
-                , [username, password], function (err, result) {
-                    if (err) {
-                        console.log(err)
-                    }
-                    res.render('userHome')
-                });
+            function addUserError(error){
+                res.status(400).send(err)
+            }
+            function addUserSuccess(){
+                res.render('userHome')
+            }
+            addUser(username, password, addUserError, addUserSuccess)
         }
         else {
             var message = passwordData.validationMessage;
             res.render('createUser', {errorMessage : message})
         }
-    });
 });
 //help with sessions https://stormpath.com/blog/everything-you-ever-wanted-to-know-about-node-dot-js-sessions
 router.post('/login', function(req, res){
@@ -138,5 +158,4 @@ router.post('/login', function(req, res){
         })
     });
 });
-
 module.exports = router;

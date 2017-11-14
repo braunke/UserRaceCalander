@@ -1,0 +1,25 @@
+<h1>{{racename}}</h1>
+<h1>{{racedate}}</h1>
+<h1>{{racelink}}</h1>
+<table>
+        <tr>
+            <td>
+                <form method="POST" action="/save">
+                    {{racename}}
+                    <input type="hidden" value="{{race.raceid}}" name="raceid">
+                    <select name="intent">
+                        <option value="I">Interested</option>
+                        <option value="G">Going</option>
+                    </select>
+                    <button type="submit">Add Race</button>
+                </form>
+            </td>
+        </tr>
+</table>
+
+<p>List of others going</p>
+<table>
+    {{#each user as |user|}}
+    <td>user.username</td>
+{{/each}}</table>
+
