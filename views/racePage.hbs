@@ -1,11 +1,9 @@
-<h1>{{racename}}</h1>
-<h1>{{racedate}}</h1>
-<h1>{{racelink}}</h1>
 <table>
+    {{#each raceinfo as |race| }}
         <tr>
             <td>
                 <form method="POST" action="/save">
-                    {{racename}}
+                    {{race.racename}}
                     <input type="hidden" value="{{race.raceid}}" name="raceid">
                     <select name="intent">
                         <option value="I">Interested</option>
@@ -15,16 +13,15 @@
                 </form>
             </td>
         </tr>
+    {{/each}}
 </table>
 
 <p>List of others going</p>
 <table>
     {{#each user as |user|}}
-    <td>user.username</td>
-{{/each}}</table>
-<ul>
-    {{#each raceinfo as |race| }}
-        <li>{{race.racename}}</li>
+        <td>user.username</td>
     {{/each}}
-</ul>
+</table>
+
+<a href = '/calendar'>Back to calendar</a>
 

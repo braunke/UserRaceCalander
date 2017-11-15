@@ -97,7 +97,7 @@ router.get('/userHome', requireLogin, function(req, res, next)
     });
 
 //saving a race to users database
-router.post('/save', function(req, res, next){
+router.post('/save', requireLogin,function(req, res, next){
 
         var race = req.body.raceid;
         var user = req.session.user;
@@ -107,7 +107,7 @@ router.post('/save', function(req, res, next){
             res.status(400).send(err);
         }
         function saveRaceSuccess(){
-            res.render('index')
+            res.render('calendar')
         }
         saveRaces(race, user, intent, saveRaceError, saveRaceSuccess)
 });
@@ -134,14 +134,14 @@ router.get('/races', function(req, res, next){
     });
 });
 //page will have info specific to each race and show info about it
-router.get('/racePage/:id', function(req, res, next){
+router.get('/racePage/:id', requireLogin, function(req, res, next){
     pool.connect(function(err,client,done){
         if(err){
             console.log("not able to get connection " + err);
             res.status(400).send(err);
         }
         var raceid = req.params.id;
-
+        userid  = req.session.user;
 
         client.query("SELECT * FROM races WHERE raceid=($1) ",[raceid], function (err,result) {
             if (err) {
