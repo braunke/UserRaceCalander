@@ -141,20 +141,36 @@ router.get('/racePage/:id', requireLogin, function(req, res, next){
             res.status(400).send(err);
         }
         var raceid = req.params.id;
-        userid  = req.session.user;
 
         client.query("SELECT * FROM races WHERE raceid=($1) ",[raceid], function (err,result) {
             if (err) {
                 console.log(err)
             }
             else {
+               raceinfoResult = result.rows;
 
-                res.render('racePage', {raceinfo : result.rows})
+
             }
+            client.query('SELECT u.*, i.intentname FROM users u ' +
+                'INNER JOIN raceintent ri ON ri.userid = u.userid '  +
+                'INNER JOIN intent i ON i.intentid = ri.intentid ' +
+                'INNER JOIN races r ON r.raceid = ri.raceid ' +
+                'WHERE r.raceid=($1)', [raceid], function(err, result){
+                if(err){
+                    console.log(err)
+                }
+                else{
+                    console.log( result.rows);
+                    res.render('racePage', {raceinfo : raceinfoResult, racerinfo : result.rows})
+                }
+                })
+            })
+
         })
     });
 
-});
+
+
 router.post('/addUser', function(req, res, next){
 
         var password = req.body.password;
@@ -165,7 +181,7 @@ router.post('/addUser', function(req, res, next){
                 res.status(400).send(err)
             }
             function addUserSuccess(){
-                res.render('userHome')
+                res.render('calendar')
             }
             addUser(username, password, addUserError, addUserSuccess)
         }
@@ -186,12 +202,17 @@ router.post('/login', function(req, res){
         console.log(username, password);
         client.query("SELECT userid FROM users WHERE username=($1) AND userpassword=($2)",[username, password], function (err,result) {
             if (err) {
-                res.render('index', {error: 'Invalid username or password'});
+                console.log("error querying database " + err);
+                res.status(400).send(err);
             }
             else {
-                console.log(result.rows[0].userid);
-                req.session.user = result.rows[0].userid;
-                res.redirect('userHome')
+                if (result.rows.length) {
+                    console.log(result.rows[0].userid);
+                    req.session.user = result.rows[0].userid;
+                    res.redirect('calendar')
+                } else {
+                    res.render('index', {error: 'Invalid username or password'});
+                }
             }
         })
     });

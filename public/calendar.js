@@ -51,7 +51,7 @@ function initCalendar(element, events) {
         eventClick: function(event){
             if (event.url){
                 window.open(event.url);
-                return false;
+                return true;
             }
         },
         eventRender: function(event, element) {

@@ -18,8 +18,11 @@
 
 <p>List of others going</p>
 <table>
-    {{#each user as |user|}}
-        <td>user.username</td>
+    {{#each racerinfo as |racer|}}
+        <tr>
+        <td>{{racer.username}}</td>
+            <td>{{racer.intentname}}</td>
+        </tr>
     {{/each}}
 </table>
 
