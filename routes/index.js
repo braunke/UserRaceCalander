@@ -117,6 +117,44 @@ router.post('/registration', function(req, res, next){
 router.get('/calendar', function(req, res, next){
     res.render('calendar')
 });
+router.get('/races', function(req, res, next){
+    pool.connect(function(err,client,done){
+        if(err){
+            console.log("not able to get connection " + err);
+            res.status(400).send({error: err});
+        }
+        client.query("SELECT * FROM races", function (err,result) {
+            if (err) {
+                res.status(400).send({error: err});
+            }
+            else {
+                res.json(result.rows);
+            }
+        })
+    });
+});
+//page will have info specific to each race and show info about it
+router.get('/racePage/:id', function(req, res, next){
+    pool.connect(function(err,client,done){
+        if(err){
+            console.log("not able to get connection " + err);
+            res.status(400).send(err);
+        }
+        var raceid = req.params.id;
+
+
+        client.query("SELECT * FROM races WHERE raceid=($1) ",[raceid], function (err,result) {
+            if (err) {
+                console.log(err)
+            }
+            else {
+
+                res.render('racePage', {raceinfo : result.rows})
+            }
+        })
+    });
+
+});
 router.post('/addUser', function(req, res, next){
 
         var password = req.body.password;

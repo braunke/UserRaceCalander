@@ -3,7 +3,41 @@
 
 $(document).ready(function() {
 
-    $('#calendar').fullCalendar({
+    var calendarEl = $('#calendar');
+    if (calendarEl.length) {
+
+        $.ajax({
+            method: 'get',
+            url: "/races"
+        }).done(function(races) {
+            console.log('received data');
+            console.log(races);
+            initRaceCalendar(calendarEl, races);
+        });
+    }
+});
+
+function initRaceCalendar(element, races) {
+    var events = racesToEvents(races);
+    initCalendar(element, events);
+}
+
+function racesToEvents(races) {
+    var events = races.map(function(race) {
+        return {
+            title: race.racename,
+            description: race.racelocation,
+            start: race.racedate, // 2017-12-11
+            url: 'http://localhost:3000/racePage/' + race.raceid
+        };
+    });
+    console.log(events);
+    return events;
+}
+
+function initCalendar(element, events) {
+
+    element.fullCalendar({
         header: {
             left: 'prev,next today',
             center: 'title',
@@ -13,29 +47,7 @@ $(document).ready(function() {
         navLinks: true, // can click day/week names to navigate views
         editable: true,
         eventLimit: true, // allow "more" link when too many events
-        events: [
-            {
-                title: 'Reindeer Run',
-                description: 'This is a cool event',
-                start: '2017-12-11',
-                url: 'https://www.reindeerrun.com/'
-            },
-            {
-                title: 'Long Event',
-                start: '2017-10-07',
-                end: '2017-10-10'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2017-10-09T16:00:00'
-            },
-            {
-                id: 999,
-                title: 'Repeating Event',
-                start: '2017-10-16T16:00:00'
-            }
-        ],
+        events: events,
         eventClick: function(event){
             if (event.url){
                 window.open(event.url);
@@ -47,6 +59,4 @@ $(document).ready(function() {
         }
 
     });
-
-});
-
+}
