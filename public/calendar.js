@@ -48,12 +48,7 @@ function initCalendar(element, events) {
         editable: true,
         eventLimit: true, // allow "more" link when too many events
         events: events,
-        eventClick: function(event){
-            if (event.url){
-                window.open(event.url);
-                return true;
-            }
-        },
+
         eventRender: function(event, element) {
             element.find('.fc-title').append("<br/>" + event.description);
         }

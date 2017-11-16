@@ -1,8 +1,19 @@
 <!--List of races user is interested / signed up for-->
 <h1>User Home</h1>
-<ul>
+<table>
     {{#each userraces as |race| }}
-        <li>{{race.racename}}</li>
+        <tr>
+            <td>
+                {{race.racename}}
+            </td>
+            <td>
+                <form method="POST" action="/delete">
+                    <input type="hidden" value="{{race.raceid}}" name="raceid">
+                    <button type="submit">Delete Race</button>
+                </form>
+            </td>
+        </tr>
     {{/each}}
-</ul>
+</table>
+
 <a href = '/calendar'>Back to calendar</a>

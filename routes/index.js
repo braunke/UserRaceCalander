@@ -217,4 +217,25 @@ router.post('/login', function(req, res){
         })
     });
 });
+router.post('/delete', function(req,res){
+    pool.connect(function(err, client, done){
+        if(err){
+            console.log("not able to get connection " + err);
+            res.status(400).send(err);
+        }
+        var raceid = req.body.raceid;
+        var userid = req.session.user;
+        console.log(raceid);
+        client.query("DELETE FROM raceintent WHERE userid=($1) AND raceid=($2)", [userid, raceid], function(err,results){
+            if (err) {
+                console.log("error querying database " + err);
+                res.status(400).send(err);
+            }
+            else{
+
+                res.render('userHome');
+            }
+        })
+    })
+});
 module.exports = router;
