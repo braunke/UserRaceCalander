@@ -1,12 +1,23 @@
-<h1>{{title}}</h1>
-<p>Login</p>
-
-{{error}}
+<div class="jumbotron text-center">
+    <h1>Login</h1>
+</div>
+    {{message}}
+    {{error}}
+<br>
 <form method="POST" action="/login">
-    <input type="text" name="username" required>Enter User Name</input><br>
-    <input type="password" name="password" required>Enter Password</input><br>
-    <button type="submit">Login</button>
+    <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+
+        <input type="text" name="username" placeholder="Username" required></input><br>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+        <input type="password" name="password" placeholder="Password" required></input><br>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-success">Login</button>
 </form>
+    <br>
 <form method="POST" action="/registration">
-    <button type="submit">Register</button>
+    <button type="submit" class="btn btn-info">Register</button>
 </form>

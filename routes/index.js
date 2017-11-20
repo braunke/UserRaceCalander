@@ -10,8 +10,9 @@ var validator = new ValidatePassword();
 
 function requireLogin (req, res, next) {
     console.log('in req login');
+    var message = "Login to use that feature";
     if (!(req.session && req.session.user)) {
-        res.redirect('/');
+        res.render('index', {message : message});
         console.log('did redir')
     } else {
         next();
@@ -60,6 +61,7 @@ function saveRaces(race, user ,intent, onError, onSuccess){
     }
     getConnection(onError, save);
 }
+//function to add a new user
 function addUser(username, password, onError, onSuccess){
     function createUser(client, done){
         client.query("INSERT INTO users (username, userpassword) VALUES ($1, $2)"
@@ -74,6 +76,21 @@ function addUser(username, password, onError, onSuccess){
             });
     }
     getConnection(onError, createUser);
+}
+//function to login
+function loginUser(username, password, onError, onSuccess) {
+    function login(client, done) {
+        client.query("SELECT userid FROM users WHERE username=($1) AND userpassword=($2)", [username, password], function (err, result) {
+            if (err) {
+                console.log(err);
+                onError(err)
+            }
+            else {
+                onSuccess(result.rows[0].userid);
+            }
+        })
+    }
+    getConnection(onError, login);
 }
 
 /* GET home page. */
@@ -192,30 +209,22 @@ router.post('/addUser', function(req, res, next){
 });
 //help with sessions https://stormpath.com/blog/everything-you-ever-wanted-to-know-about-node-dot-js-sessions
 router.post('/login', function(req, res){
-    pool.connect(function(err,client,done){
-        if(err){
-            console.log("not able to get connection " + err);
-            res.status(400).send(err);
-        }
         var username = req.body.username;
         var password = req.body.password;
-        console.log(username, password);
-        client.query("SELECT userid FROM users WHERE username=($1) AND userpassword=($2)",[username, password], function (err,result) {
-            if (err) {
-                console.log("error querying database " + err);
-                res.status(400).send(err);
+        function loginUserError(error){
+            res.status(400).send(err)
+        }
+        function loginUserSuccess(user){
+            if (user) {
+
+                req.session.user = user;
+                res.render('calendar')
+            } else {
+                res.render('index', {error: 'Invalid username or password'});
             }
-            else {
-                if (result.rows.length) {
-                    console.log(result.rows[0].userid);
-                    req.session.user = result.rows[0].userid;
-                    res.redirect('calendar')
-                } else {
-                    res.render('index', {error: 'Invalid username or password'});
-                }
-            }
-        })
-    });
+        }
+        loginUser(username, password, loginUserError, loginUserSuccess)
+
 });
 router.post('/delete', function(req,res){
     pool.connect(function(err, client, done){
@@ -233,9 +242,13 @@ router.post('/delete', function(req,res){
             }
             else{
 
-                res.render('userHome');
+                res.render('calendar');
             }
         })
     })
+});
+router.get('/logout', function(req,res){
+    req.session.destroy();
+    return res.render('index')
 });
 module.exports = router;

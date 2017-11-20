@@ -1,23 +1,22 @@
-<a href = '/calendar'>Back to calendar</a>
 <table>
     {{#each raceinfo as |race| }}
         <tr>
             <td>
                 <form method="POST" action="/save">
-                    {{race.racename}}
+                    {{ race.racename }}
                     <input type="hidden" value="{{race.raceid}}" name="raceid">
                     <select name="intent">
                         <option value="I">Interested</option>
                         <option value="G">Going</option>
                     </select>
-                    <button type="submit">Add Race</button>
+                    <button type="submit" class="btn btn-warning">Add Race</button>
                 </form>
             </td>
         </tr>
     {{/each}}
 </table>
-
-<p>List of others going</p>
+<br>
+<p>List of others going:</p>
 <table>
     {{#each racerinfo as |racer|}}
         <tr>
