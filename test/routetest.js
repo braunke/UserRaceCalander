@@ -1,5 +1,5 @@
 
-
+var _ = require('lodash');
 
 // Chai config
 
@@ -10,18 +10,22 @@ var expect = chai.expect;
 
 chai.use(chaiHTTP);
 
-it('should display the word login on the home page', function(done) {
+describe('race calendar', function() {
 
-    chai.request(server)
-    .get('/')
-    .end(function(err, res){
-    expect(res.status).to.equal(200);
-    expect(res.text).to.include('login');
+    it('should display the word login on the home page', function(done) {
+        chai.request(server)
+            .get('/')
+            .end(function(err, res) {
 
+                expect(res.status).to.equal(200);
+                expect(res.text).to.include('login');
+                done();
+            });
+    });
 
-    return done();
+    it('should give an error if the username / password is incorrect', function(done){
+        chai.request(server)
+            .get('/')
+    })
+
 });
-});
-
-
-

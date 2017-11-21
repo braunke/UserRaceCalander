@@ -10,7 +10,7 @@ var validator = new ValidatePassword();
 
 function requireLogin (req, res, next) {
     console.log('in req login');
-    var message = "Login to use that feature";
+    var message = "Login to use site features";
     if (!(req.session && req.session.user)) {
         res.render('index', {message : message});
         console.log('did redir')
@@ -86,7 +86,11 @@ function loginUser(username, password, onError, onSuccess) {
                 onError(err)
             }
             else {
-                onSuccess(result.rows[0].userid);
+                var userId;
+                if (result.rows && result.rows.length) {
+                    userId = result.rows[0].userid;
+                }
+                onSuccess(userId);
             }
         })
     }
@@ -95,7 +99,7 @@ function loginUser(username, password, onError, onSuccess) {
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-    res.render('index');
+    res.render('about');
 });
 //page with all the users races
 router.get('/userHome', requireLogin, function(req, res, next)
@@ -133,6 +137,9 @@ router.post('/registration', function(req, res, next){
 });
 router.get('/calendar', function(req, res, next){
     res.render('calendar')
+});
+router.get('/about', function (req, res, next){
+    res.render('about')
 });
 router.get('/races', function(req, res, next){
     pool.connect(function(err,client,done){
@@ -211,7 +218,7 @@ router.post('/addUser', function(req, res, next){
 router.post('/login', function(req, res){
         var username = req.body.username;
         var password = req.body.password;
-        function loginUserError(error){
+        function loginUserError(err){
             res.status(400).send(err)
         }
         function loginUserSuccess(user){
