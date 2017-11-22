@@ -15,21 +15,18 @@
   <nav class="navbar navbar-inverse">
   <div class="container-fluid">
       <div class="navbar-header">
-          <a class="navbar-brand" href="#">Race Calendar</a>
+          <a class="navbar-brand" href="/">Race Calendar</a>
       </div>
       <ul class="nav navbar-nav">
-          <li class="active"><a href="/about">About</a></li>
-
-          <li><a href="/userHome">User Home</a></li>
-          <li><a href="/calendar">Calendar</a></li>
-
+          <li class="{{#if aboutTabActive}}active{{/if}}"><a href="/about">About</a></li>
+          <li class="{{#if uHomeTabActive}}active{{/if}}"><a href="/userHome">User Home</a></li>
+          <li class="{{#if calTabActive}}active{{/if}}"><a href="/calendar">Calendar</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
           <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
       </ul>
   </div>
   </nav>
-
     {{{body}}}
   </body>
 </html>

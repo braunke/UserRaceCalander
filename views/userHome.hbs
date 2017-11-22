@@ -1,13 +1,17 @@
 <!--List of races user is interested / signed up for-->
 <div class="jumbotron text-center">
 <h1>User Home</h1>
+    <h2>Races for {{username}}</h2>
 </div>
 
-<table>
+<table class="table table-striped">
     {{#each userraces as |race| }}
         <tr>
             <td>
                 {{race.racename }}
+            </td>
+            <td>
+                {{race.intentname}}
             </td>
             <td>
                 <form method="POST" action="/delete">
@@ -18,4 +22,3 @@
         </tr>
     {{/each}}
 </table>
-

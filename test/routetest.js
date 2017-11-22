@@ -14,9 +14,8 @@ describe('race calendar', function() {
 
     it('should display the word login on the home page', function(done) {
         chai.request(server)
-            .get('/')
+            .get('/userHome')
             .end(function(err, res) {
-
                 expect(res.status).to.equal(200);
                 expect(res.text).to.include('login');
                 done();
@@ -25,7 +24,13 @@ describe('race calendar', function() {
 
     it('should give an error if the username / password is incorrect', function(done){
         chai.request(server)
-            .get('/')
-    })
+            .post('/login')
+            .send({'username' : 'cat' , 'password' : 'dog'})
+            .end(function(err, res) {
+                expect(res.status).to.equal(200);
+                expect(res.text).to.include('Invalid username or password');
+                done();
+            });
+    });
 
 });
