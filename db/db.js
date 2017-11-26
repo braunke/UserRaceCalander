@@ -54,13 +54,43 @@ function loginUser(username, password, onError, onSuccess) {
     });
 }
 
+//delete user race
+function deleteRace (raceid, userid, onError, onSuccess) {
+    dbQuery(query.user.race.remove, [userid, raceid], onError, onSuccess);
+}
+
+//show race info
+function getRaceInfo (raceid, onError, onSuccess) {
+    dbQuery(query.race.get, [raceid], onError, function(races) {
+        if (races.length) {
+            onSuccess(races[0]);
+        } else {
+            onSuccess();
+        }
+    });
+}
+ //shows users interested in a race
+function getRacers (raceid, onError, onSuccess) {
+    dbQuery(query.race.users, [raceid], onError, onSuccess);
+}
+
+//gets all races
+function getRaces (onError, onSuccess) {
+    dbQuery(query.race.races, [], onError, onSuccess);
+}
 module.exports = {
     user: {
         add: addUser,
         login: loginUser,
         race: {
             add: addUserRace,
-            get: getUserRaces
+            get: getUserRaces,
+            remove: deleteRace
         }
+    },
+    race: {
+        get: getRaceInfo,
+        users: getRacers,
+        races: getRaces
     }
 };

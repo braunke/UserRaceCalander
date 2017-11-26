@@ -46,7 +46,7 @@ router.post('/save', requireLogin, function(req, res, next) {
     var intent = req.body.intent;
 
     function saveRaceError(error) {
-        res.status(400).send(err);
+        res.status(400).send(error);
     }
     function saveRaceSuccess() {
         res.redirect('/calendar');
@@ -71,53 +71,32 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/races', function(req, res, next) {
-    pool.connect(function(err, client, done) {
-        if (err) {
-            console.log("not able to get connection " + err);
-            res.status(400).send({error: err});
-        }
-        client.query("SELECT * FROM races", function(err, result) {
-            if (err) {
-                res.status(400).send({error: err});
-            }
-            else {
-                res.json(result.rows);
-            }
-        });
-    });
+    function getRaceError(err) {
+        res.status(400).send(err);
+    }
+    function getRaceSuccess(races) {
+        res.json(races);
+    }
+    db.race.races(getRaceError, getRaceSuccess);
 });
 
 //page will have info specific to each race and show info about it
 router.get('/racePage/:id', requireLogin, function(req, res, next) {
-    pool.connect(function(err, client, done) {
-        if (err) {
-            console.log("not able to get connection " + err);
-            res.status(400).send(err);
-        }
-        var raceid = req.params.id;
+    var raceid = req.params.id;
 
-        client.query("SELECT * FROM races WHERE raceid=($1) ", [raceid], function(err, result) {
-            if (err) {
-                console.log(err);
-            }
-            else {
-               raceinfoResult = result.rows;
-            }
-            client.query('SELECT u.*, i.intentname FROM users u ' +
-                'INNER JOIN raceintent ri ON ri.userid = u.userid '  +
-                'INNER JOIN intent i ON i.intentid = ri.intentid ' +
-                'INNER JOIN races r ON r.raceid = ri.raceid ' +
-                'WHERE r.raceid=($1)', [raceid], function(err, result) {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    console.log(result.rows);
-                    res.render('racePage', {calTabActive: true, raceinfo : raceinfoResult, racerinfo : result.rows});
-                }
-            })
-        })
-    })
+    function error(err) {
+        res.status(400).send(err);
+    }
+    function raceInfoSuccess(race) {
+        function informationSuccess(users) {
+            res.render('racePage', {calTabActive: true, race : race, racerinfo : users});
+        }
+        db.race.users(raceid, error, informationSuccess);
+    }
+    db.race.get(raceid, error, raceInfoSuccess);
+
+
+
 });
 
 router.post('/addUser', function(req, res, next) {
@@ -154,28 +133,25 @@ router.post('/login', function(req, res) {
             res.render('index', {error: 'Invalid username or password'});
         }
     }
-    db.user.login(username, password, loginUserError, loginUserSuccess);
+    if (username && password) {
+        db.user.login(username, password, loginUserError, loginUserSuccess);
+    } else {
+        res.render('index', {error: 'Must enter username and password'});
+    }
 });
 
 router.post('/delete', function(req,res) {
-    pool.connect(function(err, client, done) {
-        if (err) {
-            console.log("not able to get connection " + err);
-            res.status(400).send(err);
-        }
-        var raceid = req.body.raceid;
-        var userid = req.session.user.userid;
-        console.log(raceid);
-        client.query("DELETE FROM raceintent WHERE userid=($1) AND raceid=($2)", [userid, raceid], function(err, results) {
-            if (err) {
-                console.log("error querying database " + err);
-                res.status(400).send(err);
-            }
-            else {
-                res.redirect('/calendar');
-            }
-        })
-    })
+    var raceid = req.body.raceid;
+    var userid = req.session.user.userid;
+
+    function deleteRaceError(err) {
+        res.status(400).send(err);
+    }
+    function deleteRaceSuccess() {
+        res.redirect('/calendar');
+    }
+    db.user.race.remove(raceid, userid, deleteRaceError, deleteRaceSuccess);
+
 });
 
 router.get('/logout', function(req, res) {
