@@ -21,8 +21,8 @@ var loginUser =
 
 var deleteRace =
     'DELETE FROM raceintent ' +
-    'WHERE userid=($1) ' +
-    'AND raceid=($2)';
+    'WHERE raceid=($1) ' +
+    'AND userid=($2)';
 
 var getRacers =
     'SELECT u.*, i.intentname FROM users u ' +
@@ -37,6 +37,9 @@ var getRaceInfo =
 
 var getRaces =
     'SELECT * FROM races';
+var checkRaces =
+    'SELECT * FROM raceintent ' +
+    'WHERE userid=($1) AND raceid=($2) AND intentid=($3) ';
 module.exports = {
     user: {
         add: addUser,
@@ -44,7 +47,8 @@ module.exports = {
         race: {
             add: addUserRace,
             get: getUserRaces,
-            remove: deleteRace
+            remove: deleteRace,
+            check: checkRaces
         }
     },
     race: {

@@ -49,9 +49,17 @@ router.post('/save', requireLogin, function(req, res, next) {
         res.status(400).send(error);
     }
     function saveRaceSuccess() {
-        res.redirect('/calendar');
+        res.redirect('/userHome');
     }
-    db.user.race.add(race, userid, intent, saveRaceError, saveRaceSuccess);
+    function checkRaceSuccess(races) {
+        if (races){
+            res.render('racePage', {'message' : 'You have already selected this race!'})
+        }
+        else{
+            db.user.race.add(race, userid, intent, saveRaceError, saveRaceSuccess);
+        }
+    }
+    db.user.race.check(race, userid, intent, saveRaceError, checkRaceSuccess)
 });
 
 router.post('/registration', function(req, res, next) {
@@ -95,8 +103,6 @@ router.get('/racePage/:id', requireLogin, function(req, res, next) {
     }
     db.race.get(raceid, error, raceInfoSuccess);
 
-
-
 });
 
 router.post('/addUser', function(req, res, next) {
@@ -139,7 +145,6 @@ router.post('/login', function(req, res) {
         res.render('index', {error: 'Must enter username and password'});
     }
 });
-
 router.post('/delete', function(req,res) {
     var raceid = req.body.raceid;
     var userid = req.session.user.userid;

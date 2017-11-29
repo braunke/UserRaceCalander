@@ -33,4 +33,14 @@ describe('race calendar', function() {
             });
     });
 
+    it('should display added race to user home page', function(done){
+        chai.request(server)
+            .post('/save')
+            .send({'race' : '5k' , 'userid' : 1 , 'intent' : 'interested'})
+            .end(function(err, res){
+                expect(res.status).to.equal(200);
+                expect(res.text).to.include('5k');
+                done()
+            })
+    })
 });
