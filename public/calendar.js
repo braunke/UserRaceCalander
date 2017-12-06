@@ -43,7 +43,7 @@ function initCalendar(element, events) {
             center: 'title',
             right: 'month,basicWeek,basicDay'
         },
-        defaultDate: '2017-10-12',
+        defaultDate: new Date(),
         navLinks: true, // can click day/week names to navigate views
         editable: true,
         eventLimit: true, // allow "more" link when too many events

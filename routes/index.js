@@ -34,7 +34,6 @@ router.get('/userHome', requireLogin, function(req, res, next) {
 
         res.render('userHome', {uHomeTabActive: true, userraces: races, username : loggedInUser});
     }
-
     db.user.race.get(userid, getRacesError, getRacesSuccess);
 });
 
@@ -53,13 +52,13 @@ router.post('/save', requireLogin, function(req, res, next) {
     }
     function checkRaceSuccess(races) {
         if (races){
-            res.render('racePage', {'message' : 'You have already selected this race!'})
+            res.redirect('/racePage')
         }
         else{
             db.user.race.add(race, userid, intent, saveRaceError, saveRaceSuccess);
         }
     }
-    db.user.race.check(race, userid, intent, saveRaceError, checkRaceSuccess)
+    db.user.race.check(race, userid, saveRaceError, checkRaceSuccess)
 });
 
 router.post('/registration', function(req, res, next) {
@@ -153,7 +152,7 @@ router.post('/delete', function(req,res) {
         res.status(400).send(err);
     }
     function deleteRaceSuccess() {
-        res.redirect('/calendar');
+        res.redirect('/userHome');
     }
     db.user.race.remove(raceid, userid, deleteRaceError, deleteRaceSuccess);
 

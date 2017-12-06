@@ -39,7 +39,7 @@ var getRaces =
     'SELECT * FROM races';
 var checkRaces =
     'SELECT * FROM raceintent ' +
-    'WHERE userid=($1) AND raceid=($2) AND intentid=($3) ';
+    'WHERE userid=($1) AND raceid=($2) ';
 module.exports = {
     user: {
         add: addUser,

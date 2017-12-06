@@ -6,10 +6,10 @@
                 <form method="POST" action="/save">
                     {{ race.racename }}
                     <input type="hidden" value="{{race.raceid}}" name="raceid">
-                    <select name="intent">
-                        <option value="I">Interested</option>
-                        <option value="G">Going</option>
-                    </select>
+                        <select name="intent">
+                            <option value="I">Interested</option>
+                            <option value="G">Going</option>
+                        </select>
                     <button type="submit" class="btn btn-warning">Add Race</button>
                 </form>
             </td>
@@ -17,11 +17,13 @@
     </tbody>
 </table>
 <br>
+<p>Location: {{race.racelocation}}</p>
+<p>Date: {{race.racedate}}</p>
 <p>List of others going:</p>
 <table class="table table-striped">
     {{#each racerinfo as |racer|}}
         <tr>
-        <td>{{racer.username}}</td>
+            <td>{{racer.username}}</td>
             <td>{{racer.intentname}}</td>
         </tr>
     {{/each}}

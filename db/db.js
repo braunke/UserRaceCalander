@@ -57,8 +57,8 @@ function loginUser(username, password, onError, onSuccess) {
     });
 }
 //checks if user has selected race already
-function checkRaces (race, user, intent, onError, onSuccess){
-    dbQuery(query.user.race.check, [user, race, intent], onError, function(races){
+function checkRaces (race, user, onError, onSuccess){
+    dbQuery(query.user.race.check, [user, race], onError, function(races){
         if (races.length) {
             onSuccess(races[0]);
         } else {
