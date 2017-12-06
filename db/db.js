@@ -4,7 +4,7 @@ var pool = new pg.Pool();
 
 //function to set up connection to database
 function getConnection(onError, onSuccess) {
-    pool.connect(function(err, client, done) {
+    pool.query(function(err, client, done) {
         if (err) {
             console.log("not able to get connection " + err);
             onError(err);
@@ -17,7 +17,7 @@ function getConnection(onError, onSuccess) {
 //function to get connection and query database
 function dbQuery(paramQuery, params, onError, onSuccess) {
     function runQuery(client, done) {
-        client.query(paramQuery, params, function (err, result) {
+        pool.query(paramQuery, params, function (err, result) {
             if (err) {
                 console.log(err);
                 onError(err);
@@ -26,7 +26,7 @@ function dbQuery(paramQuery, params, onError, onSuccess) {
             }
         });
     }
-    getConnection(onError, runQuery);
+    runQuery()
 }
 
 //function to grab user races

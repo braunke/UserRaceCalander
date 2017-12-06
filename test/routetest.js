@@ -7,10 +7,18 @@ var chai = require('chai');
 var chaiHTTP = require('chai-http');
 var server = require('../app');
 var expect = chai.expect;
-
+const db = require('../db/db');
+const pg = require('pg');
+var pool = new pg.Pool();
 chai.use(chaiHTTP);
 
 describe('race calendar', function() {
+
+    var raceOne = '5k';
+    var raceTwo = '10k';
+    var raceThree = '15k';
+
+
 
     it('should display the word login on the home page', function(done) {
         chai.request(server)
@@ -33,9 +41,9 @@ describe('race calendar', function() {
             });
     });
 
-    it('should display added race to user home page', function(done){
+    it('should display user races', function(done){
         chai.request(server)
-            .post('/save')
+            .get('/userHome')
             .send({'race' : '5k' , 'userid' : 1 , 'intent' : 'interested'})
             .end(function(err, res){
                 expect(res.status).to.equal(200);
