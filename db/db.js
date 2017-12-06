@@ -1,6 +1,8 @@
 const pg = require('pg');
 const query = require('./query');
-var pool = new pg.Pool();
+var pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL
+});
 
 //function to set up connection to database
 function getConnection(onError, onSuccess) {
