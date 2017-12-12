@@ -44,7 +44,6 @@ describe('race calendar', function() {
     it('should display user races', function(done){
         chai.request(server)
             .get('/userHome')
-            .send({'race' : '5k' , 'userid' : 1 , 'intent' : 'interested'})
             .end(function(err, res){
                 expect(res.status).to.equal(200);
                 expect(res.text).to.include('5k');

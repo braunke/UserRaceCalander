@@ -27,8 +27,9 @@ function racesToEvents(races) {
         return {
             title: race.racename,
             description: race.racelocation,
-            start: race.racedate, // 2017-12-11
-            url: 'http://localhost:3000/racePage/' + race.raceid
+            start: race.racedate,
+            url: 'https://racecalendar.herokuapp.com/racePage/' + race.raceid
+            // run locally url: 'http://localhost:3000/racePage/' + race.raceid
         };
     });
     console.log(events);
