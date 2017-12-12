@@ -93,7 +93,7 @@ function getRaces (onError, onSuccess) {
 //gets the last user id
 function getLastId (onError, onSuccess) {
     dbQuery(query.user.last, [], onError, function(id){
-        onSuccess(id)
+        onSuccess(id[0].userid)
     })
 }
 module.exports = {

@@ -15,7 +15,7 @@ var addUser =
     ' VALUES ($1, $2, $3)';
 
 var getLastUser =
-    'SELECT userid FROM users' +
+    'SELECT userid FROM users ' +
     'ORDER BY userid DESC LIMIT 1 ';
 
 var loginUser =

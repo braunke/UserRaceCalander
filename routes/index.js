@@ -116,8 +116,9 @@ router.post('/addUser', function(req, res, next) {
             res.redirect('/calendar');
         }
         function checkIdSuccess(id){
+            console.log(id);
             var newUserId = id + 1;
-            db.user.add(id, username, password, addUserError, addUserSuccess);
+            db.user.add(newUserId, username, password, addUserError, addUserSuccess);
         }
         db.user.last(addUserError, checkIdSuccess);
     }
