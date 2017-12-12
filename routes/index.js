@@ -52,7 +52,7 @@ router.post('/save', requireLogin, function(req, res, next) {
     }
     function checkRaceSuccess(races) {
         if (races){
-            res.redirect('/racePage')
+            res.redirect('/userHome')
         }
         else{
             db.user.race.add(race, userid, intent, saveRaceError, saveRaceSuccess);
