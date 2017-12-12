@@ -14,9 +14,6 @@ chai.use(chaiHTTP);
 
 describe('race calendar', function() {
 
-    var raceOne = '5k';
-    var raceTwo = '10k';
-    var raceThree = '15k';
 
 
 
@@ -35,13 +32,13 @@ describe('race calendar', function() {
             .post('/login')
             .send({'username' : 'cat' , 'password' : 'dog'})
             .end(function(err, res) {
-                expect(res.status).to.equal(200);
+                expect(res.status).to.equal(400);
                 expect(res.text).to.include('Invalid username or password');
                 done();
             });
     });
 
-    it('should display user races', function(done){
+    it('should display about page', function(done){
         chai.request(server)
             .get('/')
             .end(function(err, res){
@@ -49,5 +46,6 @@ describe('race calendar', function() {
                 expect(res.text).to.include('about');
                 done()
             })
-    })
+    });
+
 });
