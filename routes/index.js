@@ -115,7 +115,11 @@ router.post('/addUser', function(req, res, next) {
         function addUserSuccess() {
             res.redirect('/calendar');
         }
-        db.user.add(username, password, addUserError, addUserSuccess);
+        function checkIdSuccess(id){
+            var newUserId = id + 1;
+            db.user.add(id, username, password, addUserError, addUserSuccess);
+        }
+        db.user.last(addUserError, checkIdSuccess);
     }
     else {
         var message = passwordData.validationMessage;

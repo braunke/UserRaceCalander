@@ -43,10 +43,10 @@ describe('race calendar', function() {
 
     it('should display user races', function(done){
         chai.request(server)
-            .get('/userHome')
+            .get('/')
             .end(function(err, res){
                 expect(res.status).to.equal(200);
-                expect(res.text).to.include('5k');
+                expect(res.text).to.include('about');
                 done()
             })
     })

@@ -42,8 +42,8 @@ function addUserRace(race, user, intent, onError, onSuccess) {
 }
 
 //function to add a new user
-function addUser(username, password, onError, onSuccess) {
-    dbQuery(query.user.add, [username, password], onError, onSuccess);
+function addUser(userid, username, password, onError, onSuccess) {
+    dbQuery(query.user.add, [userid, username, password], onError, onSuccess);
 }
 
 //function to login
@@ -90,11 +90,17 @@ function getRacers (raceid, onError, onSuccess) {
 function getRaces (onError, onSuccess) {
     dbQuery(query.race.races, [], onError, onSuccess);
 }
-//checks if user has selected race already
+//gets the last user id
+function getLastId (onError, onSuccess) {
+    dbQuery(query.user.last, [], onError, function(id){
+        onSuccess(id)
+    })
+}
 module.exports = {
     user: {
         add: addUser,
         login: loginUser,
+        last: getLastId,
         race: {
             add: addUserRace,
             get: getUserRaces,

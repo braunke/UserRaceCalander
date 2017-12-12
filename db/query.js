@@ -11,8 +11,12 @@ var addUserRace =
     ' VALUES ($1, $2, $3)';
 
 var addUser =
-    'INSERT INTO users (username, userpassword) ' +
-    ' VALUES ($1, $2)';
+    'INSERT INTO users (userid, username, userpassword) ' +
+    ' VALUES ($1, $2, $3)';
+
+var getLastUser =
+    'SELECT userid FROM users' +
+    'ORDER BY userid DESC LIMIT 1 ';
 
 var loginUser =
     'SELECT * ' +
@@ -44,6 +48,7 @@ module.exports = {
     user: {
         add: addUser,
         login: loginUser,
+        last: getLastUser,
         race: {
             add: addUserRace,
             get: getUserRaces,
